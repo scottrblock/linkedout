@@ -37,19 +37,25 @@ var get_users = function(result, url, next_cursor, users){
 var get_users_callback = function(users){
   var users = _.flatten(users); 
   var $result_container = $('#results');
+  var count = 0;
 
   $.each(users, function(i, user){
     if (user.entities.url !== null && user.entities.url !== undefined && user.entities.url.urls.length > 0){
       if( user.entities.url.urls[0].expanded_url !== null && 
           user.entities.url.urls[0].expanded_url.indexOf("linkedin") > -1){
-          console.log(user);
           var result_str = "<li><strong>" + user.name + "</strong> <em>(<a target='_blank' href='http://twitter.com/" + user.screen_name + "'>@" + user.screen_name + "</a>)</em> ";
               result_str += "listed <a target='_blank' href='" + user.entities.url.urls[0].expanded_url + "'>" + user.entities.url.urls[0].expanded_url + "</a></li>";
           $result_container.append(result_str);
+
+          count = count + 1;
       }
     }
     
   });
+
+  if (count === 0){
+    $result_container.append("<li><div class='alert alert-info'>We can't find anybody that you follow with a linkedin in their Twitter bio.</div></li>");
+  }
 
   $('#loading').hide();
 
